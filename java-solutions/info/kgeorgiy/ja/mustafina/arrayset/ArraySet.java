@@ -13,7 +13,7 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return array.iterator();
+        return Collections.unmodifiableList(array).iterator();
     }
 
     public ArraySet(Comparator<E> comparator) {
@@ -112,18 +112,5 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
         return array.get(index);
     }
 
-    @Override
-    public boolean add(E e) {
-        throw new UnsupportedOperationException();
-    }
 
-    @Override
-    public boolean remove(Object o) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void clear() {
-        throw new UnsupportedOperationException();
-    }
 }
