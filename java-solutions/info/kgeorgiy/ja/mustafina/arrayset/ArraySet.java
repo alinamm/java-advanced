@@ -26,13 +26,10 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
 
     public ArraySet(Collection<E> collection, Comparator<E> comparator) {
         this.comparator = comparator;
-        if (collection != null) {
-            TreeSet<E> treeSet = new TreeSet<>(comparator);
-            treeSet.addAll(collection);
-            array = new ArrayList<>(treeSet);
-        } else {
-            array = new ArrayList<>(new TreeSet<>());
-        }
+        TreeSet<E> treeSet = new TreeSet<>(comparator);
+        treeSet.addAll(collection);
+        array = new ArrayList<>(treeSet);
+
     }
 
     @Override
