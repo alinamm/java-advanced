@@ -8,7 +8,7 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
     private final Comparator<E> comparator;
 
     public ArraySet() {
-        this(null, null);
+        this(Collections.emptyList(), null);
     }
 
     @Override
