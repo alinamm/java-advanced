@@ -46,6 +46,7 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public boolean contains(Object e) {
         return findElement((E) e) >= 0;
     }
