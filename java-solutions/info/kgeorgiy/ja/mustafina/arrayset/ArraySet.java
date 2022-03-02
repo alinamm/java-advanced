@@ -16,6 +16,7 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
         return Collections.unmodifiableList(array).iterator();
     }
 
+
     public ArraySet(Comparator<E> comparator) {
         this(Collections.emptyList(), comparator);
     }
@@ -30,6 +31,10 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
         treeSet.addAll(collection);
         array = new ArrayList<>(treeSet);
 
+    }
+
+    private ArraySet(Collection<E> collection, Comparator<E> comparator, boolean b) {
+        this(collection, comparator);
     }
 
     @Override
@@ -79,7 +84,7 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
         int toIndex = getIndex(toElement, array.size());
         int fromIndex = getIndex(fromElement, 0);
         List<E> subSet = array.subList(fromIndex, toIndex);
-        return new ArraySet<>(subSet, comparator);
+        return new ArraySet<>(subSet, comparator, true);
     }
 
     private int getIndex(E element, int pos) {
@@ -111,6 +116,4 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
         }
         return array.get(index);
     }
-
-
 }
