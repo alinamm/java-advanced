@@ -85,7 +85,7 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
         int toIndex = getIndex(toElement, array.size());
         int fromIndex = getIndex(fromElement, 0);
         List<E> subSet = array.subList(fromIndex, toIndex);
-        return new ArraySet<E>(subSet, comparator);
+        return new ArraySet<>(subSet, comparator);
     }
 
     private int getIndex(E element, int pos) {
