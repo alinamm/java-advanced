@@ -81,6 +81,7 @@ public class Walk {
         }
     }
 
+   // :NOTE: @SuppressWarnings("ResultOfMethodCallIgnored")
     public static boolean checkPath(String path, String message) {
         try {
             Path.of(path);
