@@ -4,7 +4,7 @@ import java.util.*;
 
 public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
 
-    private final ArrayList<E> array;
+    private final List<E> array;
     private final Comparator<E> comparator;
 
     public ArraySet() {
@@ -33,8 +33,9 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
 
     }
 
-    private ArraySet(Collection<E> collection, Comparator<E> comparator, boolean b) {
-        this(collection, comparator);
+    private ArraySet(List<E> collection, Comparator<E> comparator) {
+        this.array = collection;
+        this.comparator = comparator;
     }
 
     @Override
@@ -84,7 +85,7 @@ public class ArraySet<E> extends AbstractSet<E> implements SortedSet<E> {
         int toIndex = getIndex(toElement, array.size());
         int fromIndex = getIndex(fromElement, 0);
         List<E> subSet = array.subList(fromIndex, toIndex);
-        return new ArraySet<>(subSet, comparator, true);
+        return new ArraySet<E>(subSet, comparator);
     }
 
     private int getIndex(E element, int pos) {
