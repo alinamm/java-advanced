@@ -36,6 +36,7 @@ public class Walk {
             }
         }
 
+        // :NOTE: разнести исключения reader и Writer
         try (BufferedReader reader = Files.newBufferedReader(Path.of(args[0]));
              BufferedWriter writer = Files.newBufferedWriter(Path.of(args[1]))) {
 
@@ -55,6 +56,7 @@ public class Walk {
                 if (result.length() == 0) {
                     try (InputStream inputStream = Files.newInputStream(Path.of(path))) {
                         int n = 0;
+                        // :NOTE: move 8000, 8192
                         byte[] buffer = new byte[8000];
                         while (n != -1) {
                             n = inputStream.read(buffer);
@@ -65,16 +67,19 @@ public class Walk {
                         for (byte b : md.digest()) {
                             result.append(String.format("%02x", b));
                         }
+                        // :NOTE: NPE, Security, UnsupportedOperation
                     } catch (IllegalArgumentException | UnsupportedOperationException | IOException | SecurityException | NullPointerException e) {
                         result.append(ERROR_WHILE_READING_FILE);
                     }
                 }
+                // :NOTE: \n
                 writer.write(result + " " + path + "\n");
             }
         } catch (IOException e) {
             System.err.println("Input or output exception" + " " + e.getMessage());
         } catch (NoSuchAlgorithmException e) {
             System.err.println("Failed to find algorithm" + " " + e.getMessage());
+            // :NOTE: security exception
         } catch (SecurityException e) {
             System.err.println("Security exception" + " " + e.getMessage());
         }
@@ -82,6 +87,7 @@ public class Walk {
 
     public static boolean checkPath(String path, String message) {
         try {
+            // :NOTE: unused variable
             Path filePath = Path.of(path);
         } catch (InvalidPathException e) {
             System.err.println("Invalid path to " + message + " file" + " " + e.getMessage());
