@@ -1,0 +1,2 @@
+javac -d ../../out/production/info/kgeorgiy/java/advanced/implementor ../../java-advanced-2022/artifacts/info.kgeorgiy.java.advanced.implementor.jar ../java-solutions/info/kgeorgiy/ja/mustafina/implementor/Implementor.java
+jar cmf Manifest.mf Implementor.jar ../java-solutions/info/kgeorgiy/ja/mustafina/implementor/Iplementor.java
