@@ -1,1 +1,2 @@
-jar cmf Manifest.mf temp/Implementor.jar ../java-solutions/info/kgeorgiy/ja/mustafina/implementor
+javac -d temp -classpath ../../java-advanced-2022/artifacts/info.kgeorgiy.java.advanced.implementor.jar ../java-solutions/info/kgeorgiy/ja/mustafina/implementor/Implementor.java
+jar cmf Manifest.mf Implementor.jar temp
