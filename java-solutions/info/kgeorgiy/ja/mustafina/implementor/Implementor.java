@@ -22,6 +22,7 @@ import javax.tools.ToolProvider;
  * Class Implementor
  */
 public class Implementor implements Impler, JarImpler {
+    // :NOTE: javadoc
     private static final String TAB = "\t";
     private static final String NEW_LINE = System.lineSeparator();
 
