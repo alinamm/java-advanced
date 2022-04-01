@@ -16,18 +16,19 @@ public class IterativeParallelism implements ScalarIP {
         T runnable;
         R thread;
 
-        public RunnableAndThread(T runnable, R thread) {
+        public RunnableAndThread(final T runnable, final R thread) {
             this.runnable = runnable;
             this.thread = thread;
         }
     }
 
+    // :NOTE: Аналогично
     private static class RunnableEx<T, R> implements Runnable {
         private final Function<List<? extends T>, R> function;
         private final List<? extends T> list;
         private R result;
 
-        public RunnableEx(List<? extends T> list, Function<List<? extends T>, R> function) {
+        public RunnableEx(final List<? extends T> list, final Function<List<? extends T>, R> function) {
             this.list = list;
             this.function = function;
         }
@@ -38,21 +39,25 @@ public class IterativeParallelism implements ScalarIP {
         }
     }
 
-    private <T, R> List<R> parallel(int threads, List<? extends T> values, Function<List<? extends T>, R> function)
+    private <T, R> List<R> parallel(final int threads, final List<? extends T> values, final Function<List<? extends T>, R> function)
             throws InterruptedException {
+        // :NOTE: ААААА!
         List<RunnableAndThread<RunnableEx<T, R>, Thread>> action = new ArrayList<>();
-        int len = values.size() / threads;
+        final int len = values.size() / threads;
         for (int i = 0; i < threads; i++) {
-            List<? extends T> temp = values.subList(i * len, i < threads - 1 ? (i + 1) * len : values.size());
+            // :NOTE: Неравномерное распределение
+            final List<? extends T> temp = values.subList(i * len, i < threads - 1 ? (i + 1) * len : values.size());
+            // :NOTE: Убрать
             if (!temp.isEmpty()) {
-                RunnableEx<T, R> runnableEx = new RunnableEx<>(temp, function);
+                final RunnableEx<T, R> runnableEx = new RunnableEx<>(temp, function);
                 action.add(new RunnableAndThread<>(runnableEx, new Thread(runnableEx)));
             }
         }
         action = action.stream().peek(a -> a.thread.start()).toList();
-        List<R> res = new ArrayList<>();
-        for (RunnableAndThread<RunnableEx<T, R>, Thread> a : action) {
+        final List<R> res = new ArrayList<>();
+        for (final RunnableAndThread<RunnableEx<T, R>, Thread> a : action) {
             a.thread.join();
+            // :NOTE: Упростить
             res.add(a.runnable.result);
         }
         return res;
@@ -69,9 +74,9 @@ public class IterativeParallelism implements ScalarIP {
      * @throws NoSuchElementException if no values are given.
      */
     @Override
-    public <T> T maximum(int threads, List<? extends T> values, Comparator<? super T> comparator) throws InterruptedException {
+    public <T> T maximum(final int threads, final List<? extends T> values, final Comparator<? super T> comparator) throws InterruptedException {
         if (threads > 0) {
-            List<T> res = parallel(threads, values, (list) -> list.stream().max(comparator).orElseThrow());
+            final List<T> res = parallel(threads, values, (list) -> list.stream().max(comparator).orElseThrow());
             return res.stream().max(comparator).orElseThrow();
         }
         return values.stream().max(comparator).orElseThrow();
@@ -88,7 +93,7 @@ public class IterativeParallelism implements ScalarIP {
      * @throws NoSuchElementException if no values are given.
      */
     @Override
-    public <T> T minimum(int threads, List<? extends T> values, Comparator<? super T> comparator) throws InterruptedException {
+    public <T> T minimum(final int threads, final List<? extends T> values, final Comparator<? super T> comparator) throws InterruptedException {
         return maximum(threads, values, comparator.reversed());
     }
 
@@ -102,9 +107,9 @@ public class IterativeParallelism implements ScalarIP {
      * @throws InterruptedException if executing thread was interrupted.
      */
     @Override
-    public <T> boolean all(int threads, List<? extends T> values, Predicate<? super T> predicate) throws InterruptedException {
+    public <T> boolean all(final int threads, final List<? extends T> values, final Predicate<? super T> predicate) throws InterruptedException {
         if (threads > 0) {
-            List<Boolean> res = parallel(threads, values, (list) -> list.stream().allMatch(predicate));
+            final List<Boolean> res = parallel(threads, values, (list) -> list.stream().allMatch(predicate));
             return !res.contains(false);
         }
         return values.stream().allMatch(predicate);
@@ -120,7 +125,7 @@ public class IterativeParallelism implements ScalarIP {
      * @throws InterruptedException if executing thread was interrupted.
      */
     @Override
-    public <T> boolean any(int threads, List<? extends T> values, Predicate<? super T> predicate) throws InterruptedException {
+    public <T> boolean any(final int threads, final List<? extends T> values, final Predicate<? super T> predicate) throws InterruptedException {
         return !all(threads, values, predicate.negate());
     }
 }
