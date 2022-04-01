@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 
 public class IterativeParallelism implements ScalarIP {
 
+    // :NOTE: Бесполезене, заменить на lambda-выражение
     private static class RunnableAndThread<T, R> {
         T runnable;
         R thread;
