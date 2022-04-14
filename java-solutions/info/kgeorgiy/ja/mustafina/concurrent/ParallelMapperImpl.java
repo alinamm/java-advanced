@@ -45,6 +45,7 @@ public class ParallelMapperImpl implements ParallelMapper {
 
         synchronized public void set(int i, R arg) {
             res.set(i, arg);
+            // :NOTE: brackets
             if (--space == 0) notify();
         }
     }
