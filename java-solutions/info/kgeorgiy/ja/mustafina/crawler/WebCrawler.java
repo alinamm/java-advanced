@@ -14,6 +14,7 @@ public class WebCrawler implements Crawler {
     private final ExecutorService downloaders;
     private final ExecutorService extractors;
 
+    // :NOTE: usage: WebCrawler url [depth [downloads [extractors [perHost]]]] -> default values
     public static void main(String[] args) {
         try (Crawler crawler = new WebCrawler(new CachingDownloader(), Integer.parseInt(args[2]),
                 Integer.parseInt(args[3]), Integer.parseInt(args[4]))) {
@@ -85,6 +86,7 @@ public class WebCrawler implements Crawler {
     public void close() {
         downloaders.shutdown();
         extractors.shutdown();
+        // :NOTE: awaitTermination
         if (!downloaders.isShutdown() || !extractors.isShutdown()) {
             System.err.println("Executor hasn't been shutdown");
         }
