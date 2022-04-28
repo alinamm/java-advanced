@@ -22,6 +22,7 @@ public class WebCrawler implements Crawler {
 
     private static int getValue(int i, String[] args) {
         if (args.length < i) {
+            // :NOTE: >= 1
             return 0;
         } else {
             return Integer.parseInt(args[i]);
