@@ -2,11 +2,8 @@ package info.kgeorgiy.ja.mustafina.crawler;
 
 import info.kgeorgiy.java.advanced.crawler.*;
 
+import java.util.*;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.*;
 
 public class WebCrawler implements Crawler {
@@ -14,13 +11,20 @@ public class WebCrawler implements Crawler {
     private final ExecutorService downloaders;
     private final ExecutorService extractors;
 
-    // :NOTE: usage: WebCrawler url [depth [downloads [extractors [perHost]]]] -> default values
     public static void main(String[] args) {
-        try (Crawler crawler = new WebCrawler(new CachingDownloader(), Integer.parseInt(args[2]),
-                Integer.parseInt(args[3]), Integer.parseInt(args[4]))) {
-            crawler.download(args[0], Integer.parseInt(args[1]));
+        try (Crawler crawler = new WebCrawler(new CachingDownloader(), getValue(2, args), getValue(3, args),
+                getValue(4, args))) {
+            crawler.download(args[0], getValue(1, args));
         } catch (IOException e) {
             System.err.println("CachingDownloader exception " + e.getMessage());
+        }
+    }
+
+    private static int getValue(int i, String[] args) {
+        if (args.length < i) {
+            return 0;
+        } else {
+            return Integer.parseInt(args[i]);
         }
     }
 
@@ -86,9 +90,13 @@ public class WebCrawler implements Crawler {
     public void close() {
         downloaders.shutdown();
         extractors.shutdown();
-        // :NOTE: awaitTermination
-        if (!downloaders.isShutdown() || !extractors.isShutdown()) {
-            System.err.println("Executor hasn't been shutdown");
+        try {
+            if (!extractors.awaitTermination(10, TimeUnit.SECONDS) ||
+                    !downloaders.awaitTermination(10, TimeUnit.SECONDS)) {
+                System.err.println("Executor hasn't been shutdown");
+            }
+        } catch (InterruptedException e) {
+            System.err.println("Interrupted while waiting " + e.getMessage());
         }
     }
 }
