@@ -1,4 +1,4 @@
-ppackage info.kgeorgiy.ja.mustafina.hello;
+package info.kgeorgiy.ja.mustafina.hello;
 
 import info.kgeorgiy.java.advanced.hello.HelloClient;
 
