@@ -72,7 +72,7 @@ public class HelloUDPClient implements HelloClient {
                 socket.send(requestPacket);
                 socket.receive(responsePacket);
                 response = new String(responsePacket.getData(), responsePacket.getOffset(), responsePacket.getLength(), utf8);
-                if (response.matches("Hello, " + request)) {
+                if (response.equals("Hello, " + request)) {
                     break;
                 }
             } catch (IOException e) {
