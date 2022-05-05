@@ -1,4 +1,4 @@
-package info.kgeorgiy.ja.mustafina.hello;
+ppackage info.kgeorgiy.ja.mustafina.hello;
 
 import info.kgeorgiy.java.advanced.hello.HelloClient;
 
@@ -72,7 +72,7 @@ public class HelloUDPClient implements HelloClient {
                 socket.send(requestPacket);
                 socket.receive(responsePacket);
                 response = new String(responsePacket.getData(), responsePacket.getOffset(), responsePacket.getLength(), utf8);
-                if (response.contains(String.valueOf(threadNum)) && response.contains(String.valueOf(requestNum))) {
+                if (response.matches("Hello, " + request)) {
                     break;
                 }
             } catch (IOException e) {
