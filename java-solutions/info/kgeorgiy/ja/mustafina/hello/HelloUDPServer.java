@@ -59,6 +59,7 @@ public class HelloUDPServer implements HelloServer {
         service.shutdown();
         try {
             if (!service.awaitTermination(1000, TimeUnit.SECONDS)) {
+                // :NOTE: shutdownNow()
                 System.err.println("Error: Executor hasn't been shutdown");
             }
         } catch (InterruptedException e) {

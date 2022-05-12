@@ -16,8 +16,10 @@ public class HelloUDPClient implements HelloClient {
     private static final int TIME_OUT = 1000;
 
     public static void main(String[] args) {
+        // :NOTE: NPE
         if (args.length == 5 && Arrays.stream(args).allMatch(Objects::nonNull)) {
             HelloUDPClient helloUDPClient = new HelloUDPClient();
+            // :NOTE: NumberOfExceptions
             helloUDPClient.run(args[0], Integer.parseInt(args[1]), args[2], Integer.parseInt(args[3]),
                     Integer.parseInt(args[4]));
         } else {
@@ -29,6 +31,7 @@ public class HelloUDPClient implements HelloClient {
     public void run(String host, int port, String prefix, int threads, int requests) {
         var service = Executors.newFixedThreadPool(threads);
         var address = new InetSocketAddress(host, port);
+        // :NOTE: IntRange
         for (int threadNum = 0; threadNum < threads; threadNum++) {
             int finalThreadNum = threadNum;
             service.submit(() -> {
@@ -69,6 +72,7 @@ public class HelloUDPClient implements HelloClient {
                 socket.send(requestPacket);
                 socket.receive(responsePacket);
                 response = new String(responsePacket.getData(), responsePacket.getOffset(), responsePacket.getLength(), utf8);
+                // :NOTE: гарантии на одинаковость
                 if (response.equals("Hello, " + request)) {
                     break;
                 }
