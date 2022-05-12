@@ -1,21 +1,16 @@
 package info.kgeorgiy.ja.mustafina.hello;
 
+
 import info.kgeorgiy.java.advanced.hello.HelloClient;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
-import java.net.SocketException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.net.*;
+import java.nio.charset.*;
+import java.util.*;
+import java.util.concurrent.*;
 
 public class HelloUDPClient implements HelloClient {
-    private static final int TIME_OUT = 250;
+    private static final int TIME_OUT = 1000;
 
     public static void main(String[] args) {
         if (args.length == 5 && Arrays.stream(args).allMatch(Objects::nonNull)) {
@@ -44,7 +39,7 @@ public class HelloUDPClient implements HelloClient {
             }
             service.shutdown();
             try {
-                if (!service.awaitTermination(10, TimeUnit.SECONDS)) {
+                if (!service.awaitTermination(TIME_OUT, TimeUnit.SECONDS)) {
                     System.err.println("Executor hasn't been shutdown");
                 }
             } catch (InterruptedException e) {

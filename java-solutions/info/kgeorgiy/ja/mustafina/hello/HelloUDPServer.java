@@ -3,16 +3,11 @@ package info.kgeorgiy.ja.mustafina.hello;
 import info.kgeorgiy.java.advanced.hello.HelloServer;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.SocketException;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.net.*;
+import java.nio.charset.*;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 public class HelloUDPServer implements HelloServer {
     private ExecutorService service;
@@ -32,25 +27,27 @@ public class HelloUDPServer implements HelloServer {
         try {
             socket = new DatagramSocket(port);
             service = Executors.newFixedThreadPool(threads);
-            service.submit(() -> {
-                while (!Thread.interrupted() && !socket.isClosed()) {
-                    try {
-                        int size = socket.getSendBufferSize();
-                        DatagramPacket packet = new DatagramPacket(new byte[size], size);
+            for (int thread = 0; thread < threads; thread++) {
+                service.submit(() -> {
+                    while (!Thread.interrupted() && !socket.isClosed()) {
                         try {
-                            socket.receive(packet);
-                            Charset utf8 = StandardCharsets.UTF_8;
-                            packet.setData(("Hello, " + new String(packet.getData(), packet.getOffset(),
-                                    packet.getLength(), utf8)).getBytes(utf8));
-                            socket.send(packet);
-                        } catch (IOException e) {
-                            System.err.println("Error: " + e.getMessage());
+                            int size = socket.getSendBufferSize();
+                            DatagramPacket packet = new DatagramPacket(new byte[size], size);
+                            try {
+                                socket.receive(packet);
+                                Charset utf8 = StandardCharsets.UTF_8;
+                                packet.setData(("Hello, " + new String(packet.getData(), packet.getOffset(),
+                                        packet.getLength(), utf8)).getBytes(utf8));
+                                socket.send(packet);
+                            } catch (IOException e) {
+                                System.err.println("Error: " + e.getMessage());
+                            }
+                        } catch (SocketException e) {
+                            System.err.println("Error: Here is an error in the underlying protocol " + e.getMessage());
                         }
-                    } catch (SocketException e) {
-                        System.err.println("Error: Here is an error in the underlying protocol " + e.getMessage());
                     }
-                }
-            });
+                });
+            }
         } catch (SocketException e) {
             System.err.println("Error: " + e.getMessage());
         }
@@ -61,7 +58,7 @@ public class HelloUDPServer implements HelloServer {
         socket.close();
         service.shutdown();
         try {
-            if (!service.awaitTermination(10, TimeUnit.SECONDS)) {
+            if (!service.awaitTermination(1000, TimeUnit.SECONDS)) {
                 System.err.println("Error: Executor hasn't been shutdown");
             }
         } catch (InterruptedException e) {
