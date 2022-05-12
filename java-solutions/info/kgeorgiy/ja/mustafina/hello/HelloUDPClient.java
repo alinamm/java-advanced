@@ -1,11 +1,14 @@
 package info.kgeorgiy.ja.mustafina.hello;
 
-
 import info.kgeorgiy.java.advanced.hello.HelloClient;
 
 import java.io.IOException;
-import java.net.*;
-import java.nio.charset.*;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetSocketAddress;
+import java.net.SocketException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -24,29 +27,28 @@ public class HelloUDPClient implements HelloClient {
 
     @Override
     public void run(String host, int port, String prefix, int threads, int requests) {
-        try {
-            var service = Executors.newFixedThreadPool(threads);
-            var address = new InetSocketAddress(host, port);
-            for (int threadNum = 0; threadNum < threads; threadNum++) {
-                int finalThreadNum = threadNum;
-                var socket = new DatagramSocket();
-                int size = socket.getReceiveBufferSize();
-                service.submit(() -> {
+        var service = Executors.newFixedThreadPool(threads);
+        var address = new InetSocketAddress(host, port);
+        for (int threadNum = 0; threadNum < threads; threadNum++) {
+            int finalThreadNum = threadNum;
+            service.submit(() -> {
+                try (var socket = new DatagramSocket()) {
+                    int size = socket.getReceiveBufferSize();
                     for (int requestNum = 0; requestNum < requests; requestNum++) {
                         process(requestNum, finalThreadNum, socket, address, size, prefix);
                     }
-                });
-            }
-            service.shutdown();
-            try {
-                if (!service.awaitTermination(TIME_OUT, TimeUnit.SECONDS)) {
-                    System.err.println("Executor hasn't been shutdown");
+                } catch (SocketException e) {
+                    System.err.println("Error: " + e.getMessage());
                 }
-            } catch (InterruptedException e) {
-                System.err.println("Error: Interrupted while waiting " + e.getMessage());
+            });
+        }
+        service.shutdown();
+        try {
+            if (!service.awaitTermination(TIME_OUT, TimeUnit.SECONDS)) {
+                System.err.println("Executor hasn't been shutdown");
             }
-        } catch (SocketException e) {
-            System.err.println("Error: The socket could not be opened " + e.getMessage());
+        } catch (InterruptedException e) {
+            System.err.println("Error: Interrupted while waiting " + e.getMessage());
         }
     }
 
