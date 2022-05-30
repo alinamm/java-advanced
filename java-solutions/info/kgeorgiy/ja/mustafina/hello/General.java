@@ -8,7 +8,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class General {
-    public final int TIME_OUT = 200;
+    public final int TIME_OUT = 150;
     public final String IOEXCEPTION_MESSAGE = "Error: Input or Output error occurs ";
 
     public void clientMain(String[] args) {
